@@ -1,62 +1,43 @@
-document.addEventListener("DOMContentLoaded", () => {
-    const sendButton = document.getElementById("sendAlert");
-    const messageBox = document.getElementById("messageBox");
-    const statusMsg = document.getElementById("statusMsg");
+const messageInput = document.getElementById('emergencyMessage');
+const sendButton = document.getElementById('sendAlert');
+const status = document.getElementById('status');
 
-    // Habilitar o deshabilitar el botón según el contenido
-    messageBox.addEventListener("input", () => {
-        const text = messageBox.value.trim();
-        sendButton.disabled = text.length < 4 || text.length > 250;
-    });
+messageInput.addEventListener('input', () => {
+  const text = messageInput.value.trim();
+  sendButton.disabled = text.length < 4 || text.length > 250;
+});
 
-    sendButton.addEventListener("click", () => {
-        const message = messageBox.value.trim();
+sendButton.addEventListener('click', () => {
+  const message = messageInput.value.trim();
 
-        if (message.length < 4 || message.length > 250) {
-            statusMsg.textContent = "⚠️ El mensaje debe tener entre 4 y 250 caracteres.";
-            return;
-        }
+  if (message.length < 4 || message.length > 250) {
+    status.textContent = 'Tu mensaje debe tener entre 4 y 250 caracteres.';
+    return;
+  }
 
-        statusMsg.textContent = "🔄 Enviando alerta...";
+  if (!navigator.geolocation) {
+    status.textContent = 'Geolocalización no soportada por tu navegador.';
+    return;
+  }
 
-        // Obtener ubicación
-        if (navigator.geolocation) {
-            navigator.geolocation.getCurrentPosition(
-                (position) => {
-                    const { latitude, longitude } = position.coords;
-                    sendData(message, latitude, longitude);
-                },
-                (error) => {
-                    console.warn("Ubicación no disponible:", error);
-                    sendData(message, null, null);
-                }
-            );
-        } else {
-            sendData(message, null, null);
-        }
-    });
+  status.textContent = 'Obteniendo tu ubicación...';
 
-    function sendData(message, lat, lon) {
-        fetch("http://localhost:5000/api/alert", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-            },
-            body: JSON.stringify({
-                mensaje: message,
-                latitud: lat,
-                longitud: lon
-            }),
-        })
-        .then((res) => res.json())
-        .then((data) => {
-            statusMsg.textContent = "✅ " + data.mensaje;
-            messageBox.value = "";
-            sendButton.disabled = true;
-        })
-        .catch((error) => {
-            console.error("Error:", error);
-            statusMsg.textContent = "❌ No se pudo enviar la alerta.";
-        });
+  navigator.geolocation.getCurrentPosition(
+    (position) => {
+      const lat = position.coords.latitude;
+      const lon = position.coords.longitude;
+
+      // Aquí puedes enviar esta información a tu servidor o bot
+      console.log('Mensaje:', message);
+      console.log('Latitud:', lat, 'Longitud:', lon);
+
+      status.textContent = '🚨 Alerta enviada con éxito.';
+      messageInput.value = '';
+      sendButton.disabled = true;
+    },
+    (error) => {
+      console.error(error);
+      status.textContent = 'No se pudo obtener la ubicación.';
     }
+  );
 });
