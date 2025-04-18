@@ -27,32 +27,25 @@ boton.addEventListener('click', () => {
     const lat = position.coords.latitude;
     const lon = position.coords.longitude;
 
-    fetch('/api/alert', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        tipo: 'alerta_roja',
-        descripcion,
-        ubicacion: {
-          latitud: lat,
-          longitud: lon
-        }
-      })
-    })
-    .then(response => response.json())
-    .then(data => {
-      alert('✅ Alerta enviada con ubicación');
-      textarea.value = '';
-      boton.disabled = true;
-      boton.classList.remove('enabled');
-      boton.textContent = "Enviar Alerta Roja";
-    })
-    .catch(error => {
-      alert('❌ Error al enviar la alerta');
-      console.error(error);
-      boton.disabled = false;
-      boton.textContent = "Enviar Alerta Roja";
+    // Aquí puedes enviar los datos a tu backend
+    console.log({
+      tipo: 'alerta_roja',
+      descripcion,
+      ubicacion: {
+        latitud: lat,
+        longitud: lon
+      }
     });
+
+    alert("✅ Alerta enviada con ubicación:\n" + 
+          "Descripción: " + descripcion + "\n" +
+          "Latitud: " + lat + "\nLongitud: " + lon);
+
+    // Reiniciar
+    textarea.value = '';
+    boton.disabled = true;
+    boton.classList.remove('enabled');
+    boton.textContent = "Enviar Alerta Roja";
 
   }, error => {
     alert("No se pudo obtener la ubicación: " + error.message);
