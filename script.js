@@ -4,7 +4,11 @@ const status = document.getElementById('status');
 
 messageInput.addEventListener('input', () => {
   const text = messageInput.value.trim();
-  sendButton.disabled = text.length < 4 || text.length > 250;
+  if (text.length >= 4 && text.length <= 250) {
+    sendButton.disabled = false;
+  } else {
+    sendButton.disabled = true;
+  }
 });
 
 sendButton.addEventListener('click', () => {
@@ -27,7 +31,7 @@ sendButton.addEventListener('click', () => {
       const lat = position.coords.latitude;
       const lon = position.coords.longitude;
 
-      // Aquí puedes enviar esta información a tu servidor o bot
+      // Aquí podrías enviar esto a tu bot, backend o Telegram WebApp
       console.log('Mensaje:', message);
       console.log('Latitud:', lat, 'Longitud:', lon);
 
