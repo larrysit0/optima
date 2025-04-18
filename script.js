@@ -1,45 +1,62 @@
-const btnWithLocation = document.getElementById("alertWithLocation");
-const btnWithoutLocation = document.getElementById("alertWithoutLocation");
-const statusMsg = document.getElementById("statusMsg");
-const descriptionField = document.getElementById("emergencyDescription");
+const textarea = document.getElementById('descripcion');
+const boton = document.getElementById('btnEmergencia');
 
-// 🧠 Escuchamos cambios en el texto para activar los botones
-descriptionField.addEventListener("input", () => {
-    const isNotEmpty = descriptionField.value.trim().length > 0;
-    btnWithLocation.disabled = !isNotEmpty;
-    btnWithoutLocation.disabled = !isNotEmpty;
+textarea.addEventListener('input', () => {
+  const texto = textarea.value.trim();
+  if (texto.length >= 4 && texto.length <= 300) {
+    boton.disabled = false;
+    boton.classList.add('enabled');
+  } else {
+    boton.disabled = true;
+    boton.classList.remove('enabled');
+  }
 });
 
-// 🚨 Función para enviar el tipo de alerta
-function sendAlert(type) {
-    const description = descriptionField.value.trim();
-    if (!description) return;
+boton.addEventListener('click', () => {
+  const descripcion = textarea.value.trim();
 
-    statusMsg.textContent = "🔄 Enviando alerta al servidor...";
+  if (!navigator.geolocation) {
+    alert("Tu navegador no permite acceder a la ubicación.");
+    return;
+  }
 
-    fetch("http://localhost:5000/api/alert", {
-        method: "POST",
-        headers: {
-            "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-            tipo: type,
-            descripcion: description
-        }),
+  boton.disabled = true;
+  boton.textContent = "Enviando...";
+
+  navigator.geolocation.getCurrentPosition(position => {
+    const lat = position.coords.latitude;
+    const lon = position.coords.longitude;
+
+    fetch('/api/alert', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        tipo: 'alerta_roja',
+        descripcion,
+        ubicacion: {
+          latitud: lat,
+          longitud: lon
+        }
+      })
     })
-    .then((res) => res.json())
-    .then((data) => {
-        statusMsg.textContent = "✅ Alerta enviada correctamente.";
-        descriptionField.value = "";
-        btnWithLocation.disabled = true;
-        btnWithoutLocation.disabled = true;
+    .then(response => response.json())
+    .then(data => {
+      alert('✅ Alerta enviada con ubicación');
+      textarea.value = '';
+      boton.disabled = true;
+      boton.classList.remove('enabled');
+      boton.textContent = "Enviar Alerta Roja";
     })
-    .catch((err) => {
-        console.error("Error:", err);
-        statusMsg.textContent = "❌ Error al enviar la alerta.";
+    .catch(error => {
+      alert('❌ Error al enviar la alerta');
+      console.error(error);
+      boton.disabled = false;
+      boton.textContent = "Enviar Alerta Roja";
     });
-}
 
-// 🎯 Asignamos eventos a los botones
-btnWithLocation.addEventListener("click", () => sendAlert("con_ubicacion"));
-btnWithoutLocation.addEventListener("click", () => sendAlert("sin_ubicacion"));
+  }, error => {
+    alert("No se pudo obtener la ubicación: " + error.message);
+    boton.disabled = false;
+    boton.textContent = "Enviar Alerta Roja";
+  });
+});
