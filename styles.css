@@ -1,6 +1,7 @@
+/* styles.css */
 body {
     margin: 0;
-    font-family: Arial, sans-serif;
+    font-family: 'Segoe UI', Arial, sans-serif;
     background-color: #121212;
     color: #ffffff;
     display: flex;
@@ -14,13 +15,14 @@ body {
     padding: 2em;
     border-radius: 12px;
     background-color: #1e1e1e;
-    box-shadow: 0 0 12px rgba(255, 0, 0, 0.3);
+    box-shadow: 0 0 15px rgba(255, 0, 0, 0.4);
     max-width: 400px;
     width: 90%;
 }
 
 h1 {
-    margin-bottom: 10px;
+    margin-bottom: 0.5em;
+    font-size: 1.8em;
 }
 
 p {
@@ -30,14 +32,15 @@ p {
 textarea {
     width: 100%;
     height: 100px;
-    padding: 10px;
+    padding: 12px;
     font-size: 1em;
     border-radius: 8px;
     border: none;
     resize: none;
-    margin-bottom: 15px;
+    margin-bottom: 1em;
     background-color: #2a2a2a;
     color: white;
+    box-shadow: inset 0 0 5px rgba(255, 255, 255, 0.1);
 }
 
 textarea::placeholder {
@@ -47,33 +50,27 @@ textarea::placeholder {
 .btn {
     padding: 12px 20px;
     font-size: 1em;
-    margin: 10px 0;
     border: none;
     border-radius: 8px;
-    cursor: pointer;
+    cursor: not-allowed;
     width: 100%;
+    opacity: 0.6;
     transition: all 0.3s ease;
 }
 
 .btn.red {
     background-color: #e53935;
     color: white;
-    opacity: 0.6;
-    cursor: not-allowed;
 }
 
 .btn.red.enabled {
-    opacity: 1;
     cursor: pointer;
-    box-shadow: 0 0 15px rgba(255, 0, 0, 0.7);
-}
-
-.btn:hover:enabled {
-    opacity: 0.9;
+    opacity: 1;
+    box-shadow: 0 0 12px rgba(255, 0, 0, 0.6);
 }
 
 .status {
-    margin-top: 20px;
+    margin-top: 1em;
     font-style: italic;
     font-size: 0.9em;
     color: #ccc;
