@@ -1,27 +1,18 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Bot de Emergencia</title>
-    <link rel="stylesheet" href="styles.css" />
+  <meta charset="UTF-8">
+  <title>Alerta de Emergencia</title>
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <div class="container">
-        <h1>🚨 Bot de Emergencia</h1>
-        <p>Describe brevemente la emergencia antes de enviar una alerta.</p>
 
-        <!-- Descripción de la emergencia -->
-        <textarea id="emergencyDescription" placeholder="Ej: Incendio en casa, persona desmayada..." rows="3"></textarea>
+  <h1>🚨 Botón de Emergencia</h1>
 
-        <!-- Botones de emergencia -->
-        <button id="alertWithLocation" class="btn red" disabled>🚨 Alerta con Ubicación</button>
-        <button id="alertWithoutLocation" class="btn yellow" disabled>⚠️ Alerta sin Ubicación</button>
+  <textarea id="descripcion" placeholder="Describe brevemente la emergencia (mín. 4 caracteres)" maxlength="300"></textarea>
 
-        <p class="status" id="statusMsg">⏳ Esperando acción del usuario...</p>
-    </div>
+  <button id="btnEmergencia" disabled>Enviar Alerta Roja</button>
 
-    <!-- Script principal -->
-    <script src="main.js"></script>
+  <script src="script.js"></script>
 </body>
 </html>
