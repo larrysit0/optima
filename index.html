@@ -9,11 +9,14 @@
 <body>
     <div class="container">
         <h1>🚨 Bot de Emergencia</h1>
-        <p>Haz clic en uno de los botones para enviar una alerta.</p>
+        <p>Describe brevemente la emergencia antes de enviar una alerta.</p>
+
+        <!-- Descripción de la emergencia -->
+        <textarea id="emergencyDescription" placeholder="Ej: Incendio en casa, persona desmayada..." rows="3"></textarea>
 
         <!-- Botones de emergencia -->
-        <button id="alertWithLocation" class="btn red">🚨 Enviar Alerta con Ubicación</button>
-        <button id="alertWithoutLocation" class="btn yellow">⚠️ Enviar Alerta sin Ubicación</button>
+        <button id="alertWithLocation" class="btn red" disabled>🚨 Alerta con Ubicación</button>
+        <button id="alertWithoutLocation" class="btn yellow" disabled>⚠️ Alerta sin Ubicación</button>
 
         <p class="status" id="statusMsg">⏳ Esperando acción del usuario...</p>
     </div>
