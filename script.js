@@ -1,47 +1,46 @@
-const messageInput = document.getElementById('emergencyMessage');
-const sendButton = document.getElementById('sendAlert');
-const status = document.getElementById('status');
+const textarea = document.getElementById("mensaje");
+const boton = document.getElementById("boton-alerta");
+const estado = document.getElementById("estado");
 
-messageInput.addEventListener('input', () => {
-  const text = messageInput.value.trim();
-  if (text.length >= 4 && text.length <= 250) {
-    sendButton.disabled = false;
-  } else {
-    sendButton.disabled = true;
-  }
+textarea.addEventListener("input", () => {
+  const texto = textarea.value.trim();
+  boton.disabled = texto.length < 4;
 });
 
-sendButton.addEventListener('click', () => {
-  const message = messageInput.value.trim();
+boton.addEventListener("click", () => {
+  const mensaje = textarea.value.trim();
 
-  if (message.length < 4 || message.length > 250) {
-    status.textContent = 'Tu mensaje debe tener entre 4 y 250 caracteres.';
+  if (mensaje.length < 4) {
+    estado.textContent = "Por favor, escribe una emergencia válida.";
     return;
   }
+
+  estado.textContent = "Obteniendo ubicación...";
 
   if (!navigator.geolocation) {
-    status.textContent = 'Geolocalización no soportada por tu navegador.';
+    estado.textContent = "Tu navegador no soporta geolocalización.";
     return;
   }
 
-  status.textContent = 'Obteniendo tu ubicación...';
-
   navigator.geolocation.getCurrentPosition(
-    (position) => {
-      const lat = position.coords.latitude;
-      const lon = position.coords.longitude;
+    (pos) => {
+      const lat = pos.coords.latitude;
+      const lon = pos.coords.longitude;
 
-      // Aquí podrías enviar esto a tu bot, backend o Telegram WebApp
-      console.log('Mensaje:', message);
-      console.log('Latitud:', lat, 'Longitud:', lon);
+      // Aquí se simula el envío del mensaje
+      console.log("Mensaje:", mensaje);
+      console.log("Latitud:", lat);
+      console.log("Longitud:", lon);
 
-      status.textContent = '🚨 Alerta enviada con éxito.';
-      messageInput.value = '';
-      sendButton.disabled = true;
+      estado.textContent = "🚨 Emergencia enviada con ubicación.";
+
+      // Reset
+      textarea.value = "";
+      boton.disabled = true;
     },
-    (error) => {
-      console.error(error);
-      status.textContent = 'No se pudo obtener la ubicación.';
+    (err) => {
+      console.error(err);
+      estado.textContent = "Error obteniendo la ubicación.";
     }
   );
 });
