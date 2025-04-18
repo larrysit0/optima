@@ -1,5 +1,5 @@
 const textarea = document.getElementById("mensaje");
-const boton = document.getElementById("boton-alerta");
+const boton = document.getElementById("boton-emergencia");
 const estado = document.getElementById("estado");
 
 textarea.addEventListener("input", () => {
@@ -8,17 +8,17 @@ textarea.addEventListener("input", () => {
 });
 
 boton.addEventListener("click", () => {
-  const mensaje = textarea.value.trim();
+  const texto = textarea.value.trim();
 
-  if (mensaje.length < 4) {
-    estado.textContent = "Por favor, escribe una emergencia válida.";
+  if (texto.length < 4) {
+    estado.textContent = "Por favor, escribe al menos 4 caracteres.";
     return;
   }
 
   estado.textContent = "Obteniendo ubicación...";
 
   if (!navigator.geolocation) {
-    estado.textContent = "Tu navegador no soporta geolocalización.";
+    estado.textContent = "Geolocalización no disponible en este navegador.";
     return;
   }
 
@@ -27,20 +27,17 @@ boton.addEventListener("click", () => {
       const lat = pos.coords.latitude;
       const lon = pos.coords.longitude;
 
-      // Aquí se simula el envío del mensaje
-      console.log("Mensaje:", mensaje);
-      console.log("Latitud:", lat);
-      console.log("Longitud:", lon);
+      console.log("Mensaje:", texto);
+      console.log("Ubicación:", lat, lon);
 
-      estado.textContent = "🚨 Emergencia enviada con ubicación.";
+      estado.textContent = `🚨 Emergencia enviada con ubicación.\nLat: ${lat}, Lon: ${lon}`;
 
-      // Reset
       textarea.value = "";
       boton.disabled = true;
     },
     (err) => {
       console.error(err);
-      estado.textContent = "Error obteniendo la ubicación.";
+      estado.textContent = "No se pudo obtener la ubicación.";
     }
   );
 });
