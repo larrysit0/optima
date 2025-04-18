@@ -1,13 +1,20 @@
-// 📡 Este archivo enviará una petición al backend en Python para hacer la llamada
-
-// Asignamos botones por ID
 const btnWithLocation = document.getElementById("alertWithLocation");
 const btnWithoutLocation = document.getElementById("alertWithoutLocation");
 const statusMsg = document.getElementById("statusMsg");
+const descriptionField = document.getElementById("emergencyDescription");
 
-// Función para enviar petición POST al servidor
+// 🧠 Escuchamos cambios en el texto para activar los botones
+descriptionField.addEventListener("input", () => {
+    const isNotEmpty = descriptionField.value.trim().length > 0;
+    btnWithLocation.disabled = !isNotEmpty;
+    btnWithoutLocation.disabled = !isNotEmpty;
+});
+
+// 🚨 Función para enviar el tipo de alerta
 function sendAlert(type) {
-    // Cambiamos el estado visual
+    const description = descriptionField.value.trim();
+    if (!description) return;
+
     statusMsg.textContent = "🔄 Enviando alerta al servidor...";
 
     fetch("http://localhost:5000/api/alert", {
@@ -15,18 +22,24 @@ function sendAlert(type) {
         headers: {
             "Content-Type": "application/json",
         },
-        body: JSON.stringify({ tipo: type }),
+        body: JSON.stringify({
+            tipo: type,
+            descripcion: description
+        }),
     })
     .then((res) => res.json())
     .then((data) => {
-        statusMsg.textContent = "✅ " + data.mensaje;
+        statusMsg.textContent = "✅ Alerta enviada correctamente.";
+        descriptionField.value = "";
+        btnWithLocation.disabled = true;
+        btnWithoutLocation.disabled = true;
     })
-    .catch((error) => {
-        console.error("Error:", error);
-        statusMsg.textContent = "❌ Error al contactar con el servidor.";
+    .catch((err) => {
+        console.error("Error:", err);
+        statusMsg.textContent = "❌ Error al enviar la alerta.";
     });
 }
 
-// ⏺️ Eventos de clic
+// 🎯 Asignamos eventos a los botones
 btnWithLocation.addEventListener("click", () => sendAlert("con_ubicacion"));
 btnWithoutLocation.addEventListener("click", () => sendAlert("sin_ubicacion"));
