@@ -1,55 +1,69 @@
+/* Fondo oscuro */
 body {
-  background-color: #121212;
+  background-color: #0f0f0f;
   color: white;
   font-family: 'Segoe UI', sans-serif;
   display: flex;
-  flex-direction: column;
-  align-items: center;
   justify-content: center;
+  align-items: center;
   height: 100vh;
   margin: 0;
   padding: 1rem;
 }
 
+.contenedor {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  max-width: 600px;
+}
+
 h1 {
-  margin-bottom: 2rem;
+  font-size: 2rem;
+  margin-bottom: 1.5rem;
   text-align: center;
+  color: #ff4d4d;
 }
 
 textarea {
   width: 100%;
-  max-width: 500px;
-  height: 100px;
-  font-size: 1rem;
-  padding: 0.75rem;
-  border-radius: 10px;
+  height: 120px;
+  padding: 1rem;
+  font-size: 1.1rem;
+  border-radius: 12px;
   border: none;
-  resize: none;
-  box-shadow: 0 0 10px rgba(255, 0, 0, 0.5);
   outline: none;
-  margin-bottom: 1.5rem;
+  resize: none;
+  box-shadow: 0 0 15px rgba(255, 77, 77, 0.4);
+  background-color: #1f1f1f;
+  color: white;
+  margin-bottom: 2rem;
 }
 
+/* Botón rojo grande */
 button {
-  background-color: #e53935;
+  background-color: #ff1e1e;
   color: white;
   font-size: 1.5rem;
-  padding: 1rem 2rem;
+  padding: 1.2rem 2.5rem;
   border: none;
   border-radius: 20px;
   cursor: not-allowed;
-  opacity: 0.6;
+  opacity: 0.5;
   transition: all 0.3s ease;
+  width: 100%;
+  max-width: 400px;
 }
 
 button.enabled {
   cursor: pointer;
   opacity: 1;
-  box-shadow: 0 0 20px rgba(255, 0, 0, 0.8);
+  box-shadow: 0 0 25px rgba(255, 0, 0, 0.7);
 }
 
 @media (max-width: 600px) {
-  textarea {
+  textarea, button {
     width: 90%;
   }
 }
