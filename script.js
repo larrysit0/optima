@@ -1,71 +1,79 @@
-const textarea = document.getElementById('messageBox');
-const boton = document.getElementById('sendAlert');
-const status = document.getElementById('statusMsg');
+// main.js
+const sendButton = document.getElementById("sendAlert");
+const messageBox = document.getElementById("messageBox");
+const statusMsg = document.getElementById("statusMsg");
 
-// Activar botón si el texto es válido
-textarea.addEventListener('input', () => {
-    const texto = textarea.value.trim();
-    if (texto.length >= 4 && texto.length <= 300) {
-        boton.disabled = false;
-        boton.classList.add('enabled');
+// Habilitar/deshabilitar botón
+messageBox.addEventListener("input", () => {
+    const text = messageBox.value.trim();
+    if (text.length >= 4 && text.length <= 300) {
+        sendButton.disabled = false;
+        sendButton.classList.add("enabled");
     } else {
-        boton.disabled = true;
-        boton.classList.remove('enabled');
+        sendButton.disabled = true;
+        sendButton.classList.remove("enabled");
     }
 });
 
-// Enviar alerta con ubicación
-boton.addEventListener('click', () => {
-    const descripcion = textarea.value.trim();
+// Evento al hacer clic en el botón
+sendButton.addEventListener("click", () => {
+    const message = messageBox.value.trim();
 
-    if (!navigator.geolocation) {
-        alert("Tu navegador no permite acceder a la ubicación.");
+    if (message.length < 4 || message.length > 300) {
+        statusMsg.textContent = "⚠️ El mensaje debe tener entre 4 y 300 caracteres.";
         return;
     }
 
-    boton.disabled = true;
-    boton.textContent = "Enviando...";
-    status.textContent = "🔄 Enviando alerta con ubicación...";
+    statusMsg.textContent = "🔄 Enviando alerta...";
+    sendButton.disabled = true;
+    sendButton.textContent = "Enviando...";
 
-    navigator.geolocation.getCurrentPosition(position => {
-        const lat = position.coords.latitude;
-        const lon = position.coords.longitude;
+    if (!navigator.geolocation) {
+        statusMsg.textContent = "❌ No se puede acceder a la ubicación.";
+        resetButton();
+        return;
+    }
 
-        fetch('/api/alert', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-                tipo: 'alerta_roja',
-                descripcion,
-                ubicacion: {
-                    latitud: lat,
-                    longitud: lon
-                }
-            })
-        })
-        .then(response => response.json())
-        .then(data => {
-            alert('✅ Alerta enviada con ubicación');
-            textarea.value = '';
-            boton.disabled = true;
-            boton.classList.remove('enabled');
-            boton.textContent = "🚨 Enviar Alerta";
-            status.textContent = "✅ Alerta enviada correctamente.";
-        })
-        .catch(error => {
-            alert('❌ Error al enviar la alerta');
-            console.error(error);
-            boton.disabled = false;
-            boton.classList.add('enabled');
-            boton.textContent = "🚨 Enviar Alerta";
-            status.textContent = "⚠️ Hubo un error al enviar la alerta.";
-        });
-
-    }, error => {
-        alert("No se pudo obtener la ubicación: " + error.message);
-        boton.disabled = false;
-        boton.classList.add('enabled');
-        boton.textContent = "🚨 Enviar Alerta";
-        status.textContent = "⚠️ Error al obtener ubicación.";
-    });
+    navigator.geolocation.getCurrentPosition(
+        (position) => {
+            const { latitude, longitude } = position.coords;
+            sendData(message, latitude, longitude);
+        },
+        (error) => {
+            statusMsg.textContent = "❌ Error de geolocalización: " + error.message;
+            resetButton();
+        }
+    );
 });
+
+function sendData(message, lat, lon) {
+    fetch('/api/alert', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+            tipo: 'alerta_roja',
+            descripcion: message,
+            ubicacion: {
+                latitud: lat,
+                longitud: lon
+            }
+        })
+    })
+    .then(response => response.json())
+    .then(data => {
+        statusMsg.textContent = "✅ Alerta enviada con éxito.";
+        messageBox.value = "";
+        sendButton.classList.remove("enabled");
+        resetButton();
+    })
+    .catch(error => {
+        console.error(error);
+        statusMsg.textContent = "❌ Error al enviar la alerta.";
+        resetButton();
+    });
+}
+
+function resetButton() {
+    sendButton.disabled = true;
+    sendButton.textContent = "🚨 Enviar Alerta Roja";
+}
